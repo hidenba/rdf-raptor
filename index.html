@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset='utf-8' />
+    <meta http-equiv="X-UA-Compatible" content="chrome=1" />
+    <meta name="description" content="rdf-raptor : RDF.rb plugin for parsing/serializing RDF/XML, Turtle and RDFa data using the Raptor RDF Parser library." />
+
+    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
+
+    <title>rdf-raptor</title>
+  </head>
+
+  <body>
+
+    <!-- HEADER -->
+    <div id="header_wrap" class="outer">
+        <header class="inner">
+          <a id="forkme_banner" href="https://github.com/ruby-rdf/rdf-raptor">View on GitHub</a>
+
+          <h1 id="project_title">rdf-raptor</h1>
+          <h2 id="project_tagline">RDF.rb plugin for parsing/serializing RDF/XML, Turtle and RDFa data using the Raptor RDF Parser library.</h2>
+
+            <section id="downloads">
+              <a class="zip_download_link" href="https://github.com/ruby-rdf/rdf-raptor/zipball/master">Download this project as a .zip file</a>
+              <a class="tar_download_link" href="https://github.com/ruby-rdf/rdf-raptor/tarball/master">Download this project as a tar.gz file</a>
+            </section>
+        </header>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div id="main_content_wrap" class="outer">
+      <section id="main_content" class="inner">
+        <h1>Raptor RDF Parser Plugin for RDF.rb</h1>
+
+<p>This is an <a href="http://rdf.rubyforge.org/">RDF.rb</a> plugin that adds support for parsing/serializing
+<a href="http://www.w3.org/TR/REC-rdf-syntax/">RDF/XML</a>, <a href="http://en.wikipedia.org/wiki/Turtle_(syntax)">Turtle</a> and <a href="http://rdfa.info/">RDFa</a> data using the <a href="http://librdf.org/raptor/">Raptor RDF Parser</a>
+library.</p>
+
+<ul>
+<li><a href="http://github.com/ruby-rdf/rdf-raptor">http://github.com/ruby-rdf/rdf-raptor</a></li>
+<li><a href="http://blog.datagraph.org/2010/04/parsing-rdf-with-ruby">http://blog.datagraph.org/2010/04/parsing-rdf-with-ruby</a></li>
+</ul><h2>Features</h2>
+
+<ul>
+<li>Requires the <a href="http://librdf.org/raptor/">Raptor</a> library and/or command-line utilities.</li>
+<li>Parses and serializes RDF data from/into the RDF/XML or Turtle formats.</li>
+<li>Extracts RDF statements from XHTML+RDFa documents.</li>
+<li>Provides serialization format autodetection for RDF/XML, Turtle and RDFa.</li>
+<li>Compatible with any operating system supported by Raptor and Ruby.</li>
+<li>Compatible with MRI 1.8.x, 1.9.x and JRuby (tested with JRuby 1.4).</li>
+</ul><h2>Examples</h2>
+
+<pre><code>require 'rdf/raptor'
+</code></pre>
+
+<h3>Ensuring Raptor is installed and obtaining the version number</h3>
+
+<pre><code>RDF::Raptor.available?         #=&gt; true
+RDF::Raptor.version            #=&gt; "1.4.21"
+</code></pre>
+
+<h3>Parsing RDF statements from an RDF/XML file</h3>
+
+<pre><code>RDF::Reader.open("http://datagraph.org/jhacker/foaf.rdf") do |reader|
+  reader.each_statement do |statement|
+    puts statement.inspect
+  end
+end
+</code></pre>
+
+<h3>Parsing RDF statements from a Turtle file</h3>
+
+<pre><code>RDF::Reader.open("http://datagraph.org/jhacker/foaf.ttl") do |reader|
+  reader.each_statement do |statement|
+    puts statement.inspect
+  end
+end
+</code></pre>
+
+<h3>Extracting RDF statements from an HTML+RDFa document</h3>
+
+<pre><code>RDF::Reader.open(url = "http://bblfish.net/", :format =&gt; :rdfa, :base_uri =&gt; url) do |reader|
+  reader.each_statement do |statement|
+    puts statement.inspect
+  end
+end
+</code></pre>
+
+<h3>Serializing RDF statements into an RDF/XML file</h3>
+
+<pre><code>data = RDF::Repository.load("http://datagraph.org/jhacker/foaf.nt")
+
+RDF::Writer.open("output.rdf") do |writer|
+  data.each_statement do |statement|
+    writer &lt;&lt; statement
+  end
+end
+</code></pre>
+
+<h3>Serializing RDF statements into a Turtle file</h3>
+
+<pre><code>data = RDF::Repository.load("http://datagraph.org/jhacker/foaf.nt")
+
+RDF::Writer.open("output.ttl") do |writer|
+  data.each_statement do |statement|
+    writer &lt;&lt; statement
+  end
+end
+</code></pre>
+
+<h3>Obtaining the NTriples format specification class</h3>
+
+<pre><code>RDF::Format.for(:ntriples)      #=&gt; RDF::Raptor::NTriples::Format
+RDF::Format.for("input.nt")
+RDF::Format.for(:file_name      =&gt; "input.nt")
+RDF::Format.for(:file_extension =&gt; "nt")
+RDF::Format.for(:content_type   =&gt; "application/n-triples")
+</code></pre>
+
+<h3>Obtaining the RDF/XML format specification class</h3>
+
+<pre><code>RDF::Format.for(:rdfxml)       #=&gt; RDF::Raptor::RDFXML::Format
+RDF::Format.for("input.rdf")
+RDF::Format.for(:file_name      =&gt; "input.rdf")
+RDF::Format.for(:file_extension =&gt; "rdf")
+RDF::Format.for(:content_type   =&gt; "application/rdf+xml")
+</code></pre>
+
+<h3>Obtaining the Turtle format specification class</h3>
+
+<pre><code>RDF::Format.for(:turtle)       #=&gt; RDF::Raptor::Turtle::Format
+RDF::Format.for("input.ttl")
+RDF::Format.for(:file_name      =&gt; "input.ttl")
+RDF::Format.for(:file_extension =&gt; "ttl")
+RDF::Format.for(:content_type   =&gt; "text/turtle")
+</code></pre>
+
+<h3>Obtaining the RDFa format specification class</h3>
+
+<pre><code>RDF::Format.for(:rdfa)         #=&gt; RDF::Raptor::RDFa::Format
+RDF::Format.for("input.html")
+RDF::Format.for(:file_name      =&gt; "input.html")
+RDF::Format.for(:file_extension =&gt; "html")
+RDF::Format.for(:content_type   =&gt; "application/xhtml+xml")
+</code></pre>
+
+<h2>Documentation</h2>
+
+<p><a href="http://rdf.rubyforge.org/raptor/">http://rdf.rubyforge.org/raptor/</a></p>
+
+<ul>
+<li>{RDF::Raptor}
+
+<ul>
+<li>{RDF::Raptor::NTriples}</li>
+<li>{RDF::Raptor::Turtle}</li>
+<li>{RDF::Raptor::RDFXML}</li>
+<li>{RDF::Raptor::RDFa}</li>
+<li>{RDF::Raptor::Graphviz}</li>
+</ul>
+</li>
+</ul><h2>Dependencies</h2>
+
+<ul>
+<li>
+<a href="http://rubygems.org/gems/rdf">RDF.rb</a> (&gt;= 0.3.0)</li>
+<li>
+<a href="http://rubygems.org/gems/ffi">FFI</a> (&gt;= 1.0.0)</li>
+<li>
+<a href="http://librdf.org/raptor/">Raptor</a> (&gt;= 1.4.21), the <code>libraptor</code> library or the <code>rapper</code> binary</li>
+</ul><h2>Installation</h2>
+
+<p>The recommended installation method is via <a href="http://rubygems.org/">RubyGems</a>.
+To install the latest official release of the <code>RDF::Raptor</code> gem, do:</p>
+
+<pre><code>% [sudo] gem install rdf-raptor
+</code></pre>
+
+<p>To install the required <a href="http://librdf.org/raptor/">Raptor</a> command-line tools themselves, look for a
+<code>raptor</code> or <code>raptor-utils</code> package in your platform's package management
+system. For your convenience, here follow installation instructions for the
+Mac and the most common Linux and BSD distributions:</p>
+
+<pre><code>% [sudo] port install raptor             # Mac OS X with MacPorts
+% [sudo] fink install raptor-bin         # Mac OS X with Fink
+% brew install raptor                    # Mac OS X with Homebrew
+% [sudo] aptitude install raptor-utils   # Ubuntu / Debian
+% [sudo] yum install raptor              # Fedora / CentOS / RHEL
+% [sudo] zypper install raptor           # openSUSE
+% [sudo] emerge raptor                   # Gentoo Linux
+% [sudo] pacman -S raptor                # Arch Linux
+% [sudo] pkg_add -r raptor               # FreeBSD
+% [sudo] pkg_add raptor                  # OpenBSD / NetBSD
+</code></pre>
+
+<h2>Download</h2>
+
+<p>To get a local working copy of the development repository, do:</p>
+
+<pre><code>% git clone git://github.com/ruby-rdf/rdf-raptor.git
+</code></pre>
+
+<p>Alternatively, download the latest development version as a tarball as
+follows:</p>
+
+<pre><code>% wget http://github.com/ruby-rdf/rdf-raptor/tarball/master
+</code></pre>
+
+<h2>Mailing List</h2>
+
+<ul>
+<li><a href="http://lists.w3.org/Archives/Public/public-rdf-ruby/">http://lists.w3.org/Archives/Public/public-rdf-ruby/</a></li>
+</ul><h2>Authors</h2>
+
+<ul>
+<li>
+<a href="http://github.com/bendiken">Arto Bendiken</a> - <a href="http://ar.to/">http://ar.to/</a>
+</li>
+<li>
+<a href="http://github.com/jfieber">John Fieber</a> - <a href="http://github.com/jfieber">http://github.com/jfieber</a>
+</li>
+</ul><h2>Contributors</h2>
+
+<ul>
+<li>
+<a href="http://github.com/bhuga">Ben Lavender</a> - <a href="http://bhuga.net/">http://bhuga.net/</a>
+</li>
+<li>
+<a href="http://github.com/dwbutler">David Butler</a> - <a href="http://www.tomeofwisdom.com/">http://www.tomeofwisdom.com/</a>
+</li>
+<li>
+<a href="http://github.com/gkellogg">Gregg Kellogg</a> - <a href="http://greggkellogg.net/">http://greggkellogg.net/</a>
+</li>
+</ul><h2>License</h2>
+
+<p>This is free and unencumbered public domain software. For more information,
+see <a href="http://unlicense.org/">http://unlicense.org/</a> or the accompanying {file:UNLICENSE} file.</p>
+      </section>
+    </div>
+
+    <!-- FOOTER  -->
+    <div id="footer_wrap" class="outer">
+      <footer class="inner">
+        <p class="copyright">rdf-raptor maintained by <a href="https://github.com/ruby-rdf">ruby-rdf</a></p>
+        <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
+      </footer>
+    </div>
+
+    
+
+  </body>
+</html>
