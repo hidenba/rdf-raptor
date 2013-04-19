@@ -6,7 +6,7 @@ Gem::Specification.new do |gem|
   gem.date               = File.mtime('VERSION').strftime('%Y-%m-%d')
 
   gem.name               = 'rdf-raptor'
-  gem.homepage           = 'http://rdf.rubyforge.org/raptor/'
+  gem.homepage           = 'http://ruby-rdf.github.com/rdf-raptor/'
   gem.license            = 'Public Domain' if gem.respond_to?(:license=)
   gem.summary            = 'Raptor RDF Parser plugin for RDF.rb.'
   gem.description        = 'RDF.rb plugin for parsing/serializing NTriples, RDF/XML, Turtle and RDFa data using the Raptor RDF Parser library.'
@@ -25,13 +25,13 @@ Gem::Specification.new do |gem|
   gem.test_files         = %w()
   gem.has_rdoc           = false
 
-  gem.required_ruby_version      = '>= 1.8.1'
+  gem.required_ruby_version      = '>= 1.9.3'
   gem.requirements               = ['libraptor (>= 2.0)']
   gem.add_runtime_dependency     'ffi',      '>= 1.0' unless defined?(RUBY_ENGINE) && RUBY_ENGINE == 'rbx'
-  gem.add_runtime_dependency     'rdf',      '>= 0.3.8'
-  gem.add_development_dependency 'yard' ,    '>= 0.6.0'
-  gem.add_development_dependency 'rspec',    '>= 2.1.0'
-  #gem.add_development_dependency 'rdf-spec', '~> 0.3.0'
+  gem.add_runtime_dependency     'rdf',      '>= 1.1'
+  gem.add_development_dependency 'yard' ,    '>= 0.8.5'
+  gem.add_development_dependency 'rspec',    '>= 2.13.0'
+  gem.add_development_dependency 'rdf-spec', '>= 1.1'
   gem.add_development_dependency 'rake'
   gem.post_install_message       = nil
 end
