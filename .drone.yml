@@ -1,0 +1,11 @@
+image: ruby2.0.0
+env:
+  - SECRET_KEY_BASE=xxxxxxxxxxxx
+script:
+  - mkdir -p /tmp/bundle
+  - sudo chown -R ubuntu:ubuntu /tmp/bundle
+  - gem update bundler
+  - bundle install -j8 --path /tmp/bundle
+  - bundle exec rake spec
+cache:
+  - /tmp/bundle
